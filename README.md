@@ -144,8 +144,8 @@ func (p accessAuditPoster) Post(ctx context.Context, rec *broker.Envelope) error
 | `Record` / `RecordPrivileged` | *(any)* | routine / fail-closed |
 
 A privileged/break-glass access is *also* a NIS2-audit security event — emit it via
-[`go-sec-events`](https://github.com/gmb-sig/go-sec-events) too. Signing-evidence events go through
-[`go-eidas-audit`](https://github.com/gmb-sig/go-eidas-audit).
+[`go-sec-events`](https://github.com/gmb-lib/go-sec-events) too. Signing-evidence events go through
+[`go-eidas-audit`](https://github.com/gmb-lib/go-eidas-audit).
 
 ## Configuration
 
