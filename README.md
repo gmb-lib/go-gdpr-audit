@@ -50,6 +50,9 @@ being dropped.
 go get github.com/gmb-lib/go-gdpr-audit
 ```
 
+See [`CHANGELOG.md`](./CHANGELOG.md) for what each release changed, and what it means for code that
+already uses this library, before you bump.
+
 ## Usage
 
 Provide a `Poster` (the authenticated synchronous POST — typically over `go-authbyte`),
@@ -144,8 +147,8 @@ func (p accessAuditPoster) Post(ctx context.Context, rec *broker.Envelope) error
 | `Record` / `RecordPrivileged` | *(any)* | routine / fail-closed |
 
 A privileged/break-glass access is *also* a NIS2-audit security event — emit it via
-[`go-sec-events`](https://github.com/gmb-sig/go-sec-events) too. Signing-evidence events go through
-[`go-eidas-audit`](https://github.com/gmb-sig/go-eidas-audit).
+[`go-sec-events`](https://github.com/gmb-lib/go-sec-events) too. Signing-evidence events go through
+[`go-eidas-audit`](https://github.com/gmb-lib/go-eidas-audit).
 
 ## Configuration
 
@@ -174,6 +177,14 @@ go build ./...
 go test ./...
 go vet ./...
 ```
+
+## Contributing
+
+Bug reports and pull requests are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) names the gate a
+change has to pass, what a change to this library needs, and the sign-off every commit carries.
+
+Suspected vulnerabilities go through the private route in [SECURITY.md](SECURITY.md) — never a
+public issue.
 
 ## License
 
