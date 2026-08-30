@@ -50,6 +50,9 @@ being dropped.
 go get github.com/gmb-lib/go-gdpr-audit
 ```
 
+See [`CHANGELOG.md`](./CHANGELOG.md) for what each release changed, and what it means for code that
+already uses this library, before you bump.
+
 ## Usage
 
 Provide a `Poster` (the authenticated synchronous POST — typically over `go-authbyte`),
