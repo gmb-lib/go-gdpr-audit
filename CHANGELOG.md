@@ -18,6 +18,11 @@ uses it.
   file outbox spooled, since it writes its own copy. Update to take the fix; no code change is
   needed.
 
+### Changed
+
+- `go-platform-kit` → v1.11.6, whose correlation middleware now keeps the correlation id as the
+  request's own copy, and the indirect `goccy/go-json` → v0.12.0.
+
 ## v1.1.7
 
 This release requires **Go 1.27.3** (was 1.27.2). Raise your own module's `go` directive before upgrading.
