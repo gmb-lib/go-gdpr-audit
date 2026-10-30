@@ -4,6 +4,20 @@ Notable changes to this library, newest first. Versions are git tags; this file 
 for whoever bumps the dependency — what changed, and what it means for code that already
 uses it.
 
+## v1.1.8
+
+### Fixed
+
+- **A record queued during an access-audit outage could name another request's resource or
+  person.** A routine record the access audit cannot take at once is queued and posted later.
+  It kept the values the handler read off the request as given (a route's document or envelope
+  id, the data subject, the correlation id), and those point into a buffer the server reuses for
+  the next request on the connection, so the record could be posted naming whatever that next
+  request carried. The client now copies a record before it queues it or hands it to a
+  `DeadLetter` sink. A record posted at once was never affected, and neither was a record the
+  file outbox spooled, since it writes its own copy. Update to take the fix; no code change is
+  needed.
+
 ## v1.1.7
 
 This release requires **Go 1.27.3** (was 1.27.2). Raise your own module's `go` directive before upgrading.

@@ -28,7 +28,9 @@ Every post is bounded by the configured **timeout (enforced per post)**; drain r
 **jittered exponential backoff**; and a **circuit breaker** buffers routine records
 immediately while the sink is slow/failing (privileged posts always attempt). Records that
 cannot be persisted or buffered are handed to the optional **`DeadLetter`** sink before
-being dropped.
+being dropped. The client copies a record before it buffers or dead-letters it, so an
+`Outbox` or a `DeadLetter` sink may keep the record as given: no value in it still points
+into the request's buffer, which the server reuses for the next request.
 
 > **Back-pressure contract.** On a sustained outage the routine path progresses
 > sync → buffered → buffer-full → **error**. Treat routine-record errors as **non-fatal**
