@@ -5,7 +5,7 @@ go 1.27.3
 require (
 	azugo.io/azugo v0.40.2
 	azugo.io/core v0.40.1
-	github.com/gmb-lib/go-platform-kit v1.11.5
+	github.com/gmb-lib/go-platform-kit v1.11.6
 	github.com/go-quicktest/qt v1.102.0
 	github.com/spf13/viper v1.21.0
 	github.com/valyala/fasthttp v1.77.0
@@ -29,7 +29,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.2 // indirect
 	github.com/go-playground/validator/v10 v10.30.5 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
-	github.com/goccy/go-json v0.11.2 // indirect
+	github.com/goccy/go-json v0.12.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.33.0 // indirect

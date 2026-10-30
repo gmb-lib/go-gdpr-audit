@@ -216,6 +216,10 @@ func (c *Client) record(ctx *azugo.Context, ev *broker.Envelope, critical bool) 
 // dead-letters the record and returns an error the caller must treat as
 // non-fatal (see Record).
 func (c *Client) buffer(ev *broker.Envelope, cause error) error {
+	// From here the record outlives the request, in the outbox or a dead-letter
+	// sink, so it must not share the request's buffer (see detach).
+	ev = detach(ev)
+
 	if encErr := c.outbox.Enqueue(ev); encErr != nil {
 		c.drop(ev, "outbox full", cause)
 
@@ -489,6 +493,82 @@ func resourceOrNil(r broker.Resource) *broker.Resource {
 	}
 
 	return &r
+}
+
+// detach returns a copy of rec that shares no string with it. A handler builds
+// a record from values read off the request (a route's id, the correlation id
+// from a header), and those point into a buffer the server reuses for the next
+// request on the connection; a record kept past its request would come to name
+// whatever that next request carried. Attribute values other than strings and
+// string slices are kept as given.
+func detach(rec *broker.Envelope) *broker.Envelope {
+	out := *rec
+
+	out.EventID = strings.Clone(rec.EventID)
+	out.CorrelationID = strings.Clone(rec.CorrelationID)
+	out.TraceID = strings.Clone(rec.TraceID)
+	out.EventType = strings.Clone(rec.EventType)
+	out.Operation = broker.Operation(strings.Clone(string(rec.Operation)))
+	out.LawfulBasis = strings.Clone(rec.LawfulBasis)
+	out.Purpose = strings.Clone(rec.Purpose)
+	out.Outcome = broker.Outcome(strings.Clone(string(rec.Outcome)))
+	out.IP = strings.Clone(rec.IP)
+	out.Device = strings.Clone(rec.Device)
+	out.PrevHash = strings.Clone(rec.PrevHash)
+	out.Hash = strings.Clone(rec.Hash)
+
+	if rec.Categories != nil {
+		out.Categories = make([]broker.Category, len(rec.Categories))
+		for i, cat := range rec.Categories {
+			out.Categories[i] = broker.Category(strings.Clone(string(cat)))
+		}
+	}
+
+	if rec.Actor != nil {
+		out.Actor = &broker.Actor{
+			ID:        strings.Clone(rec.Actor.ID),
+			Type:      strings.Clone(rec.Actor.Type),
+			Assurance: strings.Clone(rec.Actor.Assurance),
+		}
+	}
+
+	out.DataSubjects = cloneStrings(rec.DataSubjects)
+
+	if rec.Resource != nil {
+		out.Resource = &broker.Resource{
+			Type: strings.Clone(rec.Resource.Type),
+			ID:   strings.Clone(rec.Resource.ID),
+		}
+	}
+
+	if rec.Attributes != nil {
+		out.Attributes = make(map[string]any, len(rec.Attributes))
+		for k, v := range rec.Attributes {
+			switch val := v.(type) {
+			case string:
+				v = strings.Clone(val)
+			case []string:
+				v = cloneStrings(val)
+			}
+
+			out.Attributes[strings.Clone(k)] = v
+		}
+	}
+
+	return &out
+}
+
+func cloneStrings(ss []string) []string {
+	if ss == nil {
+		return nil
+	}
+
+	out := make([]string, len(ss))
+	for i, s := range ss {
+		out[i] = strings.Clone(s)
+	}
+
+	return out
 }
 
 func subjects(id string) []string {
